@@ -1,0 +1,48 @@
+<html>
+
+<head>
+    <title>test</title>
+</head>
+
+<body>
+    <button type="button" class="recognition-button" id="recognition-button">スタート</button>
+</body>
+<script>
+    function startRecognition() {
+        console.log("start")
+        const utterance = new SpeechSynthesisUtterance();
+        const recognition = new webkitSpeechRecognition();
+
+        recognition.lang = 'ja-JP';
+        recognition.continuous = true;
+
+        recognition.start();
+
+        recognition.onresult = function (e) {
+            const results = e.results;
+            console.log(results);
+            utterance.text = results[results.length - 1][0].transcript;
+            speechSynthesis.speak(utterance);
+        };
+        recognition.onsoundstart = function () {
+            console.log("認識中");
+        };
+        recognition.onnomatch = function () {
+            console.log("もう一度試してください");
+        };
+        recognition.onerror = function () {
+            console.log("エラー");
+        };
+        recognition.onsoundend = function () {
+            console.log("停止中");
+            startRecognition();
+        };
+    };
+    const recognitionButton = document.getElementById('recognition-button');
+    recognitionButton.addEventListener('click', function () {
+        startRecognition();
+    });
+
+</script>
+
+</html>
